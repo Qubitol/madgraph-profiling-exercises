@@ -484,7 +484,7 @@ perf script | $FLAMEGRAPH_DIR/stackcollapse-perf.pl > fortran.folded
 $FLAMEGRAPH_DIR/flamegraph.pl fortran.folded > flamegraph_fortran.svg
 ```
 
-> **Warning -- What if it can't find `stackcollapse-perf.pl`:**
+> **Warning -- What if it can't find `stackcollapse-perf.pl`?**
 > This may happen because of two reasons:
 > - you did not downloaded the `Flamegraph` repository as explained in [3.3](#33-install-the-flamegraph-scripts);
 > - you happened to have closed the current terminal, so now the environment variable `$FLAMEGRAPH_DIR` is empty.
