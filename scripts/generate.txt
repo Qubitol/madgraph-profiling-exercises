@@ -1,0 +1,2 @@
+generate g g > t t~ g g
+output madevent_simd MY_PROCESS

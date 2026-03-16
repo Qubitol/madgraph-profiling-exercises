@@ -1,0 +1,3 @@
+launch MY_PROCESS
+set cudacpp_backend cppavx2
+set nevents 10000
