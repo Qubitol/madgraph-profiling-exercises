@@ -18,13 +18,18 @@ diagram: $(DIAGRAM).png
 $(DIAGRAM).pdf: $(DIAGRAM).tex
 	cd figures && xelatex -interaction=nonstopmode choice-diagram.tex
 
+MAGICK := $(shell command -v magick 2>/dev/null || command -v convert 2>/dev/null)
+
 $(DIAGRAM).png: $(DIAGRAM).pdf
-	magick -density 300 $(DIAGRAM).pdf -quality 95 $(DIAGRAM).png
+ifndef MAGICK
+	$(error Neither "magick" nor "convert" found. Install ImageMagick.)
+endif
+	$(MAGICK) -density 300 $(DIAGRAM).pdf -quality 95 $(DIAGRAM).png
 
 # ── Build the main document ──────────────────────────────────────────────────
 pdf: $(MAIN).pdf
 
-$(MAIN).pdf: $(MAIN).tex $(DIAGRAM).png
+$(MAIN).pdf: $(MAIN).tex preamble.tex $(DIAGRAM).png
 	$(LATEXMK) $(MAIN).tex
 
 # ── Clean auxiliary files ────────────────────────────────────────────────────
