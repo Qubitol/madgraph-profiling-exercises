@@ -57,15 +57,15 @@ jobs:
         id: version
         run: echo "VERSION=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
 
-      - name: Install ImageMagick and fonts
+      - name: Install ImageMagick
         run: |
           apt-get update && apt-get install -y --no-install-recommends \
-            imagemagick fonts-firacode
+            imagemagick
           # Allow ImageMagick to convert PDFs (policy restriction on some images)
           sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/' \
             /etc/ImageMagick-6/policy.xml 2>/dev/null || true
 
-      - name: Install Fira Sans and Fira Math fonts
+      - name: Install Fira fonts
         run: |
           # If Fira Sans is not packaged, download it
           mkdir -p /usr/local/share/fonts/fira
