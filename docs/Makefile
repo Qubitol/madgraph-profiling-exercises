@@ -29,7 +29,7 @@ endif
 # ── Build the main document ──────────────────────────────────────────────────
 pdf: $(MAIN).pdf
 
-$(MAIN).pdf: $(MAIN).tex preamble.tex $(DIAGRAM).png
+$(MAIN).pdf: $(MAIN).tex preamble.tex $(DIAGRAM).png references.bib
 	$(LATEXMK) $(MAIN).tex
 
 # ── Clean auxiliary files ────────────────────────────────────────────────────

@@ -21,6 +21,23 @@
 \usepackage{parskip}               % Paragraph spacing instead of indentation
 \setlength{\parskip}{0.5\baselineskip}
 
+% ── Bibliography ─────────────────────────────────────────────────────────────
+\usepackage[backend=biber, style=numeric, sorting=none, date=short, urldate=short]{biblatex}
+\addbibresource{references.bib}
+% Force dd/mm/yyyy for all dates
+\DeclareFieldFormat{urldate}{\mkbibparens{visited~#1}}
+\renewcommand{\finentrypunct}{}
+
+\AtEveryBibitem{%
+  \iffieldundef{urldate}{}{\printfield{urldate}}%
+}
+
+% Override date formatting
+\renewbibmacro*{urldate}{%
+  \iffieldundef{urlyear}{}{%
+    \printtext{\thefield{urlday}/\thefield{urlmonth}/\thefield{urlyear}}%
+  }%
+}
 % ── Colours ──────────────────────────────────────────────────────────────────
 \usepackage[dvipsnames]{xcolor}
 \definecolor{accent}{HTML}{3F51B5}

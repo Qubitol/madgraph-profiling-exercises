@@ -507,10 +507,10 @@ A key takeaway is that profiling is an iterative process. Profiling again at the
 
 ## 10. References and useful links
 
+- Stephan Hageböck et al., *Data-parallel leading-order event generation in MadGraph5_aMC@NLO*: [arXiv:2507.21039](https://arxiv.org/abs/2507.21039)
+- Andrea Valassi et al., *Madgraph on GPUs and vector CPUs: Towards production. The 5-year journey to the first LO release CUDACPP v1.00.00*: [arXiv:2503.21935](https://arxiv.org/abs/2503.21935)
+- MadGraph5_aMC@NLO collaboration, *MadGraph5_aMC@NLO source repository*: https://github.com/mg5amcnlo/mg5amcnlo
+- MadGraph4GPU collaboration, *MadGraph4GPU source repository*: https://github.com/madgraph5/madgraph4gpu
+- *perf wiki -- Tutorial*: https://perf.wiki.kernel.org/index.php/Tutorial
 - Brendan Gregg, *Flame Graphs*: https://www.brendangregg.com/flamegraphs.html
-- FlameGraph tools: https://github.com/brendangregg/FlameGraph
-- MG5aMC repository: https://github.com/mg5amcnlo/mg5amcnlo
-- MadGraph4GPU repository: https://github.com/madgraph5/madgraph4gpu
-- A. Valassi et al., *Madgraph on GPUs and vector CPUs: towards production*, [arXiv:2503.21935](https://arxiv.org/abs/2503.21935)
-- A. Valassi, *New GPU developments in the Madgraph CUDACPP plugin*, [arXiv:2510.05392](https://arxiv.org/abs/2510.05392)
-- `perf` wiki: https://perf.wiki.kernel.org/index.php/Tutorial
+- Brendan Gregg, *FlameGraph tools*: https://github.com/brendangregg/FlameGraph
