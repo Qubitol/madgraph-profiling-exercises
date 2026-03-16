@@ -491,15 +491,15 @@ Look for keywords like `packed`, `sse`, `avx`, `retired`.
 
 In this session we covered:
 
-1. **Instrument the build** for profiling (debug symbols, frame pointers).
-2. **Record** stack samples with `perf record` and counters with `perf stat`.
-3. **Visualise** call stacks with flamegraphs.
-4. **Identify** the bottleneck and quantify its weight.
-5. **Predict** speedups using Amdahl's law.
-6. **Verify** with hardware performance counters.
-7. **Iterate**: once the bottleneck is addressed, the next one emerges.
+- **Understand the code** by downloading MadGraph and doing some simple runs
+- **Instrument the build** for profiling (debug symbols, frame pointers).
+- **Record** stack samples with `perf record` and counters with `perf stat`.
+- **Visualise** call stacks with flamegraphs.
+- **Identify** the bottleneck and quantify its weight, and using Amdahl's law to predict the speedup.
+- **Iterate** once the bottleneck is addressed, the next one emerges.
 
-A key takeaway is that profiling is an iterative process. Profiling again at the end of any optimisation work is essential to understand what actually changed and whether new bottlenecks have appeared.
+A key takeaway is that profiling is an iterative process.
+Profiling again at the end of any kind of optimisation work is essential to be able to understand what actually changed, if performances have improved, and whether new bottlenecks have appeared.
 
 > **What about GPUs?** When the matrix element computation is offloaded to GPU, CPU-only profilers like `perf` can no longer see the offloaded computation. The CPU flamegraph will show time spent in CUDA runtime calls (e.g. `cudaDeviceSynchronize`) rather than in the code itself. To profile GPU workloads, tools like NVIDIA **Nsight Systems** and **Nsight Compute** are needed. These are covered in the GPU lecture.
 

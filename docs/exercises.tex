@@ -686,20 +686,19 @@ Then answer the following questions:
 \label{sec:summary}
 % ============================================================================
 
-In this session we covered the typical steps a simple and introductory profiling session may involve.
+In this session we covered the typical steps a simple and introductory profiling session may involve:
 \begin{enumerate}[nosep]
+    \item \textbf{Understand the code} by downloading MadGraph and doing some simple runs
     \item \textbf{Instrument the build} for profiling (debug symbols, frame pointers).
     \item \textbf{Record} stack samples with \texttt{perf record} and counters with \texttt{perf stat}.
     \item \textbf{Visualise} call stacks with flamegraphs.
-    \item \textbf{Identify} the bottleneck and quantify its weight.
-    \item \textbf{Predict} speedups using Amdahl's law.
-    \item \textbf{Verify} with hardware performance counters.
-    \item \textbf{Iterate}: once the bottleneck is addressed, the next one emerges.
+    \item \textbf{Identify} the bottleneck and quantify its weight, and using Amdahl's law to predict the speedup.
+    \item \textbf{Iterate} once the bottleneck is addressed, the next one emerges.
 \end{enumerate}
 As you saw, few commands are able to give you many insights about your code, guiding already several optimisations.
 
 A key takeaway is that profiling is an iterative process.
-Profiling again at the end of any kind of optimisation work is essential to be able to understand what actually changed, if performances changes, and whether new bottlenecks have appeared.
+Profiling again at the end of any kind of optimisation work is essential to be able to understand what actually changed, if performances have improved, and whether new bottlenecks have appeared.
 
 \begin{tipbox}[What about GPUs?]
 When the matrix element computation is offloaded to GPU, CPU-only profilers like \perf can no longer see the offloaded computations.
