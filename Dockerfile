@@ -18,7 +18,7 @@
 #
 # =============================================================================
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 LABEL maintainer="Name Surname"
 LABEL description="MadGraph5 + CUDACPP + perf + FlameGraph ready for the lectures \"Profiling with perf and Flamegraphs\""
