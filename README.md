@@ -44,7 +44,7 @@
 
 ## 1. Background
 
-MadGraph5_aMC@NLO (MG5aMC) is a Monte Carlo event generator widely used in High Energy Physics and by the main LHC experiments. At its core, MG5aMC is a meta-code: given a certain physics process, it *writes* Fortran code that can be used to obtain physical events describing the specified process. This implies computing the corresponding scattering matrix elements, performing the phase space integration, and event unweighting — tasks that are done by the generated program **MadEvent**.
+MadGraph5_aMC@NLO (MG5aMC) is a Monte Carlo event generator widely used in High Energy Physics and by the main LHC experiments. At its core, MG5aMC is a meta-code: given a certain physics process, it *writes* Fortran code that can be used to obtain physical events describing the specified process. This implies computing the corresponding scattering matrix elements, performing the phase space integration, and event unweighting, tasks that are done by the generated program **MadEvent**.
 
 The **CUDACPP** plugin, developed at CERN, enhances the code generator engine, allowing it to write C++ code that can exploit SIMD vector instructions on CPUs or be offloaded to GPUs, replacing the Fortran matrix element calculation. The other parts of MadEvent (phase space, unweighting, …) stay unchanged.
 
@@ -85,19 +85,19 @@ perf stat ls
 
 ### 2.2 If you want to use the Docker image
 
-First, verify you have Docker installed — see the [official instructions](https://docs.docker.com/engine/install/).
+First, verify you have Docker installed, see the [official instructions](https://docs.docker.com/engine/install/).
 
 A Docker image is provided with MadGraph, the CUDACPP plugin, the FlameGraph tools, and `perf` pre-installed:
 
 ```bash
-docker pull ghcr.io/<OWNER>/<REPO>:latest
+docker pull ghcr.io/Qubitol/madgraph-profiling-exercises:latest
 ```
 
 > **macOS / Apple Silicon users:** The Docker image works natively on Apple Silicon without x86 emulation. CUDACPP supports ARM NEON through the `cppsse4` backend, so **Mac users using the Docker image should use `cppsse4` as the backend when running MadGraph**.
 
 #### Running the container
 
-`perf` accesses hardware performance counters through the host kernel, so the container must run with elevated privileges. There are two options.
+The tool `perf` accesses hardware performance counters through the host kernel, so the container must run with elevated privileges. There are two options.
 
 **Option A: `--privileged` (simplest)**
 
@@ -105,7 +105,7 @@ docker pull ghcr.io/<OWNER>/<REPO>:latest
 docker run -it --rm \
   --privileged \
   --pid=host \
-  ghcr.io/<OWNER>/<REPO>:latest
+  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
 ```
 
 **Option B: fine-grained capabilities (more restrictive)**
@@ -116,10 +116,10 @@ docker run -it --rm \
   --cap-add SYS_PTRACE \
   --security-opt seccomp=unconfined \
   --pid=host \
-  ghcr.io/<OWNER>/<REPO>:latest
+  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
 ```
 
-> ⚠️ **Host-side prerequisites:** The **host machine** must allow unprivileged access to performance counters. Check with `sysctl kernel.perf_event_paranoid` — it should return `-1`. If not:
+> ⚠️ **Host-side prerequisites:** The **host machine** must allow unprivileged access to performance counters. Check with `sysctl kernel.perf_event_paranoid`, it should return `-1`. If not:
 > ```bash
 > sudo sysctl kernel.perf_event_paranoid=-1
 > ```
@@ -150,7 +150,7 @@ docker cp <container_id>:/home/user/path/to/flamegraph.svg .
 # Or mount a volume when starting:
 docker run -it --rm --privileged --pid=host \
   -v $(pwd)/output:/home/user/output \
-  ghcr.io/<OWNER>/<REPO>:latest
+  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
 ```
 
 ---
@@ -160,9 +160,9 @@ docker run -it --rm --privileged --pid=host \
 ### 3.1 Install MadGraph
 
 ```bash
-wget https://launchpad.net/mg5amcnlo/3.0/3.6.x/+download/MG5_aMC_v3.6.6.tar.gz
-tar xzf MG5_aMC_v3.6.6.tar.gz
-mv MG5_aMC_v3_6_6 MadGraph5
+wget https://github.com/mg5amcnlo/mg5amcnlo/archive/refs/tags/v3.6.6.tar.gz
+tar xzf v3.6.6.tar.gz
+mv mg5amcnlo-3.6.6 MadGraph5
 cd MadGraph5
 ```
 
@@ -315,7 +315,7 @@ Change `OPTFLAGS`:
 
 > ⚠️ **AMD GPU users:** There is an additional `override OPTFLAGS` that should be updated similarly.
 
-> **Are these flags passed also to GPU builds?** Yes — the `OPTFLAGS` variable is forwarded to the host compiler `g++` via `nvcc`'s `-Xcompiler` flag in the Makefile, so modifying `OPTFLAGS` is sufficient.
+> **Are these flags passed also to GPU builds?** Yes, the `OPTFLAGS` variable is forwarded to the host compiler `g++` via `nvcc`'s `-Xcompiler` flag in the Makefile, so modifying `OPTFLAGS` is sufficient.
 
 ### 5.2 Rebuild
 
@@ -329,7 +329,7 @@ make madevent_fortran_link   # build also the Fortran-only version
 
 ### 5.3 Increase the number of events
 
-Profiling with a sampling profiler requires collecting enough samples. At 97 Hz, a 1-second run yields only ~97 samples — too few for a meaningful flamegraph.
+Profiling with a sampling profiler requires collecting enough samples. At 97 Hz, a 1-second run yields only ~97 samples, too few for a meaningful flamegraph.
 
 Edit `G1/input_app.txt` and increase the number of events to at least **100,000** for CPU runs (the first integer in the first line), and **1,000,000** for GPU runs:
 
@@ -385,7 +385,7 @@ $FLAMEGRAPH_DIR/flamegraph.pl fortran.folded > flamegraph_fortran.svg
 
 Open `flamegraph_fortran.svg` in a web browser. The SVG is interactive: hover over bars to see function names and sample percentages, click to zoom, or search for functions.
 
-> **✅ Exercise 4a:** Generate the flamegraph for the Fortran baseline. Identify the function that has been sampled the most — this is the current bottleneck. Note its name and the percentage of total samples it accounts for. Also note the total wall-time from the standard output.
+> **✅ Exercise 4a:** Generate the flamegraph for the Fortran baseline. Identify the function that has been sampled the most: this is the current bottleneck. Note its name and the percentage of total samples it accounts for. Also note the total wall-time from the standard output.
 
 ### 6.3 Profile the vectorised version
 
