@@ -678,3 +678,15 @@ Profiling again at the end of any kind of optimisation work is essential to be a
 > The CPU flamegraph will show time spent in CUDA runtime calls (e.g. `cudaDeviceSynchronize`) rather than in the code itself.
 > To profile GPU workloads, tools like NVIDIA **Nsight Systems** (for CPU+GPU timeline visualisation) and **Nsight Compute** (for detailed GPU kernel analysis) are needed.
 > These are covered in the GPU lecture.
+
+## 10. References and useful links
+
+- Johan Alwall et al., *MadGraph 5 : Going Beyond*: [arXiv:1106.0522](https://arxiv.org/abs/1106.0522)
+- J. Alwall et al., *The automated computation of tree-level and next-to-leading order differential cross sections, and their matching to parton shower simulations*: [arXiv:1405.0301](https://arxiv.org/abs/1405.0301)
+- Stephan Hageböck et al., *Data-parallel leading-order event generation in MadGraph5_aMC@NLO*: [arXiv:2507.21039](https://arxiv.org/abs/2507.21039)
+- Andrea Valassi et al., *Madgraph on GPUs and vector CPUs: Towards production. The 5-year journey to the first LO release CUDACPP v1.00.00*: [arXiv:2503.21935](https://arxiv.org/abs/2503.21935)
+- MadGraph5_aMC@NLO collaboration, *MadGraph5_aMC@NLO source repository*: https://github.com/mg5amcnlo/mg5amcnlo
+- MadGraph4GPU collaboration, *MadGraph4GPU source repository*: https://github.com/madgraph5/madgraph4gpu
+- *perf wiki -- Tutorial*: https://perf.wiki.kernel.org/index.php/Tutorial
+- Brendan Gregg, *Flame Graphs*: https://www.brendangregg.com/flamegraphs.html
+- Brendan Gregg, *FlameGraph tools*: https://github.com/brendangregg/FlameGraph
