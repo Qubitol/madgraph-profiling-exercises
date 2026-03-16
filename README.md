@@ -90,7 +90,7 @@ First, verify you have Docker installed, see the [official instructions](https:/
 A Docker image is provided with MadGraph, the CUDACPP plugin, the FlameGraph tools, and `perf` pre-installed:
 
 ```bash
-docker pull ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+docker pull ghcr.io/qubitol/madgraph-profiling-exercises:latest
 ```
 
 > **macOS / Apple Silicon users:** The Docker image works natively on Apple Silicon without x86 emulation. CUDACPP supports ARM NEON through the `cppsse4` backend, so **Mac users using the Docker image should use `cppsse4` as the backend when running MadGraph**.
@@ -105,7 +105,7 @@ The tool `perf` accesses hardware performance counters through the host kernel, 
 docker run -it --rm \
   --privileged \
   --pid=host \
-  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+  ghcr.io/qubitol/madgraph-profiling-exercises:latest
 ```
 
 **Option B: fine-grained capabilities (more restrictive)**
@@ -116,7 +116,7 @@ docker run -it --rm \
   --cap-add SYS_PTRACE \
   --security-opt seccomp=unconfined \
   --pid=host \
-  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+  ghcr.io/qubitol/madgraph-profiling-exercises:latest
 ```
 
 > ⚠️ **Host-side prerequisites:** The **host machine** must allow unprivileged access to performance counters. Check with `sysctl kernel.perf_event_paranoid`, it should return `-1`. If not:
@@ -150,7 +150,7 @@ docker cp <container_id>:/home/user/path/to/flamegraph.svg .
 # Or mount a volume when starting:
 docker run -it --rm --privileged --pid=host \
   -v $(pwd)/output:/home/user/output \
-  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+  ghcr.io/qubitol/madgraph-profiling-exercises:latest
 ```
 
 ---

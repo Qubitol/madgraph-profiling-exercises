@@ -75,7 +75,7 @@ First, verify you have Docker installed in your Linux distribution, see the \hre
 A Docker image is provided with MadGraph, the CUDACPP plugin, the FlameGraph tools, and \perf pre-installed.
 
 \begin{lstlisting}
-docker pull ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+docker pull ghcr.io/qubitol/madgraph-profiling-exercises:latest
 \end{lstlisting}
 
 \begin{tipbox}[macOS / Apple Silicon users]
@@ -94,7 +94,7 @@ There are two options.
 docker run -it --rm \
   --privileged \
   --pid=host \
-  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+  ghcr.io/qubitol/madgraph-profiling-exercises:latest
 \end{lstlisting}
 
 \paragraph{Option B: fine-grained capabilities (more restrictive)}
@@ -105,7 +105,7 @@ docker run -it --rm \
   --cap-add SYS_PTRACE \
   --security-opt seccomp=unconfined \
   --pid=host \
-  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+  ghcr.io/qubitol/madgraph-profiling-exercises:latest
 \end{lstlisting}
 
 % https://medium.com/@geekidea_81313/running-perf-in-docker-kubernetes-7eb878afcd42
@@ -158,7 +158,7 @@ Alternatively, mount a host directory as a volume when starting the container:
 \begin{lstlisting}
 docker run -it --rm --privileged --pid=host \
   -v $(pwd)/output:/home/user/output \
-  ghcr.io/Qubitol/madgraph-profiling-exercises:latest
+  ghcr.io/qubitol/madgraph-profiling-exercises:latest
 \end{lstlisting}
 
 Files placed in \texttt{\textasciitilde/output/} inside the container will then appear in the \texttt{output/} directory on the host.
