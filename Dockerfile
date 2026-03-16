@@ -20,7 +20,7 @@
 
 FROM ubuntu:24.04
 
-LABEL maintainer="Name Surname"
+LABEL maintainer="Daniele Massaro"
 LABEL description="MadGraph5 + CUDACPP + perf + FlameGraph ready for the lectures \"Profiling with perf and Flamegraphs\""
 
 ENV DEBIAN_FRONTEND=noninteractive
