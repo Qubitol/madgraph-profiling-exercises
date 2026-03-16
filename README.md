@@ -242,7 +242,6 @@ launch MY_PROCESS
 done
 set cudacpp_backend cppavx2
 set nevents 10000
-EOF
 ```
 
 The `done` command skips the first prompt. The `set` command is used in the second prompt to modify `run_card.dat` parameters.
