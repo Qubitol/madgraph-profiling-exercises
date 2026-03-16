@@ -1,0 +1,27 @@
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+
+# Intermediate build products (diagram PDF is intermediate; PNG is kept)
+figures/choice-diagram.pdf
+figures/choice-diagram.aux
+figures/choice-diagram.log
+figures/choice-diagram.fls
+figures/choice-diagram.fdb_latexmk
+figures/choice-diagram.synctex.gz
+
+# Do NOT ignore:
+# - exercises.tex (source)
+# - exercises.pdf (committed on release)
+# - figures/choice-diagram.tex (source)
+# - figures/choice-diagram.png (used by README)

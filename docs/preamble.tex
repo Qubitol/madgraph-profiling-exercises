@@ -1,0 +1,238 @@
+% ── Encoding & fonts ─────────────────────────────────────────────────────────
+\usepackage{fontspec}
+\setmainfont{Fira Sans}[
+    BoldFont   = {Fira Sans Bold},
+    ItalicFont = {Fira Sans Italic},
+    BoldItalicFont = {Fira Sans Bold Italic},
+]
+\setsansfont{Fira Sans}
+\setmonofont{FiraCode NF}[
+    Scale = 0.85,
+]
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{unicode-math}
+\setmathfont{Fira Math}  % or remove this line and use \usepackage{newtxsf} if Fira Math is not installed
+
+% ── Layout ───────────────────────────────────────────────────────────────────
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}               % Paragraph spacing instead of indentation
+\setlength{\parskip}{0.5\baselineskip}
+
+% ── Colours ──────────────────────────────────────────────────────────────────
+\usepackage[dvipsnames]{xcolor}
+\definecolor{accent}{HTML}{3F51B5}
+\definecolor{accentlight}{HTML}{C5CAE9}
+\definecolor{accentdark}{HTML}{283593}
+\definecolor{codebg}{HTML}{F5F5F5}
+\definecolor{codefr}{HTML}{E0E0E0}
+\definecolor{warnred}{HTML}{C62828}
+\definecolor{tipblue}{HTML}{1565C0}
+\definecolor{exgreen}{HTML}{2E7D32}
+
+% ── Code listings ────────────────────────────────────────────────────────────
+\usepackage{listings}
+
+\lstdefinestyle{normal}{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{grey}\itshape,
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{codefr},
+    framesep=5pt,
+    xleftmargin=5pt,
+    xrightmargin=5pt,
+}
+
+\lstdefinestyle{bashstyle}{
+    backgroundcolor=\color{codebg},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{green!50!black}\itshape,
+    keywordstyle=\color{accent}\bfseries,
+    stringstyle=\color{red!60!black},
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{codefr},
+    framesep=5pt,
+    xleftmargin=5pt,
+    xrightmargin=5pt,
+    language=bash,
+    morekeywords={perf,wget,tar,make,source,mv,git,grep,ls},
+    literate={~}{\textasciitilde}{1}
+}
+
+\lstdefinestyle{diffstyle}{
+    backgroundcolor=\color{yellow!5},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{codefr},
+    framesep=5pt,
+    xleftmargin=5pt,
+    xrightmargin=5pt,
+}
+
+\lstdefinestyle{outputstyle}{
+    backgroundcolor=\color{accentlight!15},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    rulecolor=\color{codefr},
+    framesep=5pt,
+    xleftmargin=5pt,
+    xrightmargin=5pt,
+}
+
+\lstset{style=normal}
+
+% ── Boxes (tcolorbox) ───────────────────────────────────────────────────────
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{tipbox}[1][]{
+    enhanced,
+    colback=accent!4!white,
+    colframe=accent,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    sharp corners,
+    boxrule=0pt,
+    leftrule=3pt,
+    top=6pt, bottom=6pt,
+    left=8pt, right=8pt,
+    attach boxed title to top left={yshift=-2mm, xshift=4mm},
+    boxed title style={
+        colback=accent,
+        sharp corners,
+        boxrule=0pt,
+        top=2pt, bottom=2pt, left=6pt, right=6pt,
+    },
+}
+
+\newtcolorbox{warnbox}[1][]{
+    enhanced,
+    colback=warnred!4!white,
+    colframe=warnred,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    sharp corners,
+    boxrule=0pt,
+    leftrule=3pt,
+    top=6pt, bottom=6pt,
+    left=8pt, right=8pt,
+    attach boxed title to top left={yshift=-2mm, xshift=4mm},
+    boxed title style={
+        colback=warnred,
+        sharp corners,
+        boxrule=0pt,
+        top=2pt, bottom=2pt, left=6pt, right=6pt,
+    },
+}
+
+\newtcolorbox{exercisebox}[1][]{
+    enhanced,
+    colback=exgreen!4!white,
+    colframe=exgreen,
+    coltitle=white,
+    fonttitle=\bfseries\sffamily,
+    title={#1},
+    sharp corners,
+    boxrule=0pt,
+    leftrule=3pt,
+    top=6pt, bottom=6pt,
+    left=8pt, right=8pt,
+    attach boxed title to top left={yshift=-2mm, xshift=4mm},
+    boxed title style={
+        colback=exgreen,
+        sharp corners,
+        boxrule=0pt,
+        top=2pt, bottom=2pt, left=6pt, right=6pt,
+    },
+}
+
+% ── Tables, lists, math ─────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{multirow}
+
+% ── Title styling ────────────────────────────────────────────────────────────
+\makeatletter
+\renewcommand{\maketitle}{%
+    \begin{center}
+        {\color{accent}\rule{\textwidth}{2pt}}\\[0.8em]
+        {\LARGE\bfseries\color{accentdark} \@title \par}
+        \vspace{0.6em}
+        {\large\color{gray!70!black} \@author \par}
+        \vspace{0.1em}
+        {\small\color{gray!70!black} \@date \par}
+        \vspace{0.2em}
+        {\color{accent}\rule{\textwidth}{2pt}}
+    \end{center}
+    \vspace{1em}
+}
+\makeatother
+
+% ── Section styling ──────────────────────────────────────────────────────────
+\usepackage{titlesec}
+\titleformat{\section}
+    {\Large\bfseries\color{accent}}
+    {\thesection}{0.8em}{}[\vspace{2pt}{\color{accentlight}\titlerule[1.5pt]}]
+\titleformat{\subsection}
+    {\large\bfseries\color{accentdark}}
+    {\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}
+    {\normalsize\bfseries\color{accentdark}}
+    {\thesubsubsection}{0.5em}{}
+\titleformat{\paragraph}
+    {\normalsize\bfseries\color{accent}}
+    {}
+    {0em}
+    {}
+\titlespacing{\paragraph}{0pt}{0.8\baselineskip}{7pt}
+
+% ── Section styling ──────────────────────────────────────────────────────────
+\usepackage{xspace}
+\newcommand{\perf}{\texttt{perf}\xspace}
+\newcommand{\madgraph}{\mbox{MadGraph5\_aMC@NLO}\xspace}
+\newcommand{\mgamc}{\mbox{MG5aMC}\xspace}
+\newcommand{\cudacpp}{\mbox{CUDACPP}\xspace}
+
+% ── Header / footer ──────────────────────────────────────────────────────────
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+% Version: injected by CI, or provide a fallback for local builds
+\IfFileExists{version.tex}{\input{version.tex}}{\newcommand{\docversion}{dev}}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{accent}\leaders\hrule height \headrulewidth\hfill}}
+\fancyhead[L]{\small\color{accent}Profiling with \perf and Flamegraphs}
+\fancyhead[R]{\small\color{accent}\thepage/\pageref{LastPage}}
+\fancyfoot[L]{\small\color{accent}\docversion}
+
+% ── Hyperlinks ───────────────────────────────────────────────────────────────
+\usepackage[savepos]{zref} % for the form
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=accentdark,
+    urlcolor=accent,
+    citecolor=accentdark,
+    pdftitle={Profiling with perf and Flamegraphs},
+    pdfauthor={Daniele Massaro},
+}
+\renewcommand{\DefaultOptionsofText}{
+    bordercolor=black,
+    backgroundcolor=white,
+    bordersep=1pt
+}
+
