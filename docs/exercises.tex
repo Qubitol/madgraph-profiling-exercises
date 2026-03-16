@@ -69,6 +69,24 @@ Before starting, check that \perf works:
 perf stat ls
 \end{lstlisting}
 
+\subsubsection{Copying files from a remote machine (like LXplus)}
+\label{sec:scp}
+
+If you are working on a remote machine (e.g.\ LXplus via SSH), the generated flamegraph SVGs live on that machine, not on your computer.
+To view them in a browser, you need to copy them back.
+Use \texttt{scp} from a terminal \emph{on your local machine} (this works on Linux, macOS, and Windows with PowerShell or WSL):
+
+\begin{lstlisting}[style=bashstyle]
+scp <username>@lxplus.cern.ch:/path/to/flamegraph.svg .
+\end{lstlisting}
+
+You can also copy multiple files at once:
+\begin{lstlisting}[style=bashstyle]
+scp <username>@lxplus.cern.ch:/path/to/'*.svg' .
+\end{lstlisting}
+
+Then open the \texttt{.svg} files in your browser locally.
+
 \subsection{If you want to use the Docker image}
 First, verify you have Docker installed in your Linux distribution, see the \href{https://docs.docker.com/engine/install/}{official instructions}.
 
@@ -128,7 +146,7 @@ sudo sysctl kernel.perf_event_paranoid=-1
 MadGraph5 & \texttt{\textasciitilde/MadGraph5/} \\
 CUDACPP plugin & \texttt{\textasciitilde/MadGraph5/PLUGIN/} \\
 FlameGraph scripts & \texttt{/opt/FlameGraph/} (also in \texttt{PATH}) \\
-\texttt{perf} & \texttt{/usr/bin/perf} \\
+\texttt{perf} & \texttt{/usr/bin/local/perf} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -201,6 +219,7 @@ Or, more simply, open MadGraph, run \texttt{install cudacpp}, and then wait for 
 The plugin will be placed in the \texttt{PLUGIN/} directory.
 
 \subsection{Install the FlameGraph scripts}
+\label{sec:installation_flamegraph}
 
 We will use Brendan Gregg's FlameGraph tools to convert \perf data into Flamegraphs:
 
@@ -214,23 +233,29 @@ cd MadGraph5
 \subsection{Check your machine's vectorisation support}
 \label{sec:check_simd}
 
-Before choosing a CUDACPP backend to run, check the compiler flags by reading \texttt{/proc/cpuinfo}, or by running `lscpu`, you should find that at least \texttt{sse4\_2} and \texttt{avx}/\texttt{avx2}.
+Before choosing a CUDACPP backend to run, check the compiler flags by reading \texttt{/proc/cpuinfo}, or by running \texttt{lscpu}, you should find that at least \texttt{sse4\_2} and \texttt{avx}/\texttt{avx2}.
 
 \begin{lstlisting}[style=bashstyle]
 grep -o -E 'sse4_2|avx2|avx512f|avx512bw|avx512vl' /proc/cpuinfo
 \end{lstlisting}
 
 The output tells you which backends you can use:
-\begin{itemize}[nosep]
-    \item \texttt{sse4\_2} $\to$ backend \texttt{cppsse4} (128-bit, 2 doubles per instruction)
-    \item \texttt{avx2} $\to$ backend \texttt{cppavx2} (256-bit, 4 doubles per instruction)
-    \item \texttt{avx512f} + \texttt{avx512bw} + \texttt{avx512vl} $\to$ backends \texttt{cpp512y} or \texttt{cpp512z} (8 doubles per instruction)
-\end{itemize}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{CPU flag(s)} & \textbf{MadGraph Backend} & \textbf{Width} & \textbf{Doubles/instruction} \\
+\midrule
+\texttt{sse4\_2}  & \texttt{cppsse4} & 128-bit & 2 \\
+\texttt{avx2}     & \texttt{cppavx2} & 256-bit & 4 \\
+\texttt{avx512f} or \texttt{avx512bw} or \texttt{avx512vl} & \texttt{cpp512y} or \texttt{cpp512z} & 512-bit & 8 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \begin{exercisebox}[Exercise 1]
 Install MadGraph, the CUDACPP plugin, and the FlameGraph tools.
 Verify that \perf works.
-Check which SIMD instruction sets your machine supports and decide which backend you will use in the following exercises.
+Check which SIMD instruction sets your machine supports and decide which backend you will use in the following exercises (whenever you find the placeholder \texttt{<backend>}, the value of the parameter \texttt{cudacpp\_backend}).
 Specify here the backend: \TextField[name=backend, width=2.5cm]{}
 \end{exercisebox}
 
@@ -245,7 +270,7 @@ We will use the process $gg \to t\bar{t}gg$ (gluon annihilation into a top--anti
 This process has many Feynman diagrams, making the matrix element calculation computationally expensive and therefore an interesting profiling target.
 
 To generate this process, we will use the MadGraph command-line interface.
-Start MadGraph
+Start MadGraph with the following command (this is the command you will always need to use in case you will need to run MadGraph):
 \begin{lstlisting}[style=bashstyle]
 ./bin/mg5_aMC
 \end{lstlisting}
@@ -263,24 +288,25 @@ You will find out a new folder named \texttt{MY\_PROCESS} can be found in the cu
 The output mode determines which backends are available:
 \begin{itemize}[nosep]
     \item \texttt{madevent\_simd}: enables CPU backends (\texttt{cppnone}, \texttt{cppsse4}, \texttt{cppavx2}, \texttt{cpp512y}, \texttt{cpp512z})
-    \item \texttt{madevent\_gpu}: enables GPU backends (CUDA, HIP)
+    \item \texttt{madevent\_gpu}: enables GPU backends (\texttt{cuda}, \texttt{hip})
 \end{itemize}
 \end{tipbox}
 
 \subsection{Run a first test}
 
 Now we will run the generated code, using the \texttt{launch} command.
-Restart MadGraph if you closed it, and run the following commands (replace \texttt{cppavx2} with the appropriate backend for your machine, see~\S~\ref{sec:check_simd}):
+Restart MadGraph if you closed it, and run the following commands (replace \texttt{<backend>} with the appropriate backend for your machine, see~\S~\ref{sec:check_simd}):
 
 \begin{lstlisting}
 launch MY_PROCESS
 done
-set cudacpp_backend cppavx2
+set cudacpp_backend <backend>
 set nevents 10000
+done
 \end{lstlisting}
 
-The \texttt{done} command in the middle serves for the purpose of skipping one of the prompts.
-Indeed, the \texttt{set} command can be used only in the second prompt, when the program is asking to modify \texttt{param\_card.dat} or \texttt{run\_card.dat}.
+The \texttt{done} command in the middle serves for the purpose of skipping one of the prompts, while the one at the end is used to start the event generation.
+The \texttt{set} command can be used only in the second prompt, when the program is asking to modify \texttt{param\_card.dat} or \texttt{run\_card.dat}.
 
 If this completes without errors and produces a cross-section result, your setup is working.
 
@@ -298,7 +324,7 @@ The \texttt{madevent} file is a symlink to the actual compiled binary (e.g.\ \te
 The first launch also creates subdirectories \texttt{G1/}, \texttt{G2/}, \ldots, that represent the various \emph{integration channels of the phase space}.
 The thing you need to know is that each one of them contains a text file, named \texttt{input\_app.txt}, with the parameters for that specific phase-space parametrisation.
 
-When using \texttt{launch}, MadGraph orchestrate the run of the executable \texttt{madevent} on the different parametrisations determined by the \texttt{G*/} folders for a certain subprocess.
+When using \texttt{launch}, MadGraph orchestrates the run of the executable \texttt{madevent} on the different parametrisations determined by the \texttt{G*/} folders for a certain subprocess.
 This means \texttt{madevent} represents the \emph{smallest} component of the full computation.
 It is the script that it is worth profiling.
 
@@ -387,9 +413,11 @@ From the \texttt{SubProcesses/P1\_gg\_ttxgg/} directory:
 
 \begin{lstlisting}[style=bashstyle]
 make cleanall
-make madevent_cpp_link       # build the C++ vectorised version
+make madevent_<backend>_link # build the C++ vectorised version
 make madevent_fortran_link   # build also the Fortran-only version
 \end{lstlisting}
+
+Remember to substitute \texttt{<backend>} with whatever you chose in \S~\ref{sec:check_simd}.
 
 This recipe \texttt{madevent\_*\_link} is present in the makefile to build at once all the files available in the different folders.
 
@@ -399,16 +427,18 @@ Profiling with a sampling profiler requires collecting enough samples to build s
 At low sampling frequency, e.g. 97\,Hz, a 1-second run yields only $\approx$97 samples, which may be too few for a meaningful flamegraph.
 We ideally need to collect thousands of samples.
 
-Edit \texttt{G1/input\_app.txt} and increase the number of events to at least \textbf{100\,000} for CPU runs (the first integer in the first line), and \textbf{1\,000\,000} for GPU runs (in case you are trying these exercises on the GPU).
+Let's create a new input file \texttt{input\_app.txt}, where we increase the number of events to at least \textbf{100\,000} for CPU runs (the first integer in the first line), and \textbf{1\,000\,000} for GPU runs (in case you are trying these exercises on the GPU).
 The file would look like this (mind, also the two integer numbers next to the first integer changed as well):
 
-\begin{lstlisting}[style=outputstyle]
+\begin{lstlisting}[style=bashstyle]
+cat > input_app.txt << EOF
 100000 1 1 !Number of events and max and min iterations
 0.1        !Accuracy
 2          !Grid Adjustment 0=none, 2=adjust
 1          !Suppress Amplitude 1=yes
 0          !Helicity Sum/event 0=exact
 1
+EOF
 \end{lstlisting}
 
 \begin{exercisebox}[Exercise 3]
@@ -444,7 +474,7 @@ From the subprocess directory (\texttt{SubProcesses/P1\_gg\_ttxgg/}):
 \paragraph{Record}
 
 \begin{lstlisting}[style=bashstyle]
-perf record --call-graph=fp,1024 -F 97  -- ./madevent_fortran < G1/input_app.txt
+perf record --call-graph=fp,1024 -F 97  -- ./madevent_fortran < input_app.txt
 \end{lstlisting}
 
 \begin{tipbox}[What does \texttt{--call-graph=fp,1024} do?]
@@ -465,13 +495,26 @@ perf script | $FLAMEGRAPH_DIR/stackcollapse-perf.pl > fortran.folded
 $FLAMEGRAPH_DIR/flamegraph.pl fortran.folded > flamegraph_fortran.svg
 \end{lstlisting}
 
+\begin{warnbox}[What if it can't find \texttt{stackcollapse-perf.pl}]
+This may happen because of two reasons:
+\begin{itemize}
+    \item you did not downloaded the \texttt{Flamegraph} repository as explained in \S~\ref{sec:installation_flamegraph};
+    \item you happened to have closed the current terminal, so now the environment variable \texttt{\$FLAMEGRAPH\_DIR} is empty.
+\end{itemize}
+Have a look at \S~\ref{sec:installation_flamegraph}, and perform the installation or define the environment variable for the current session, if needed.
+For the latter, in case you downloaded the \texttt{Flamegraph} repository in your home directory, you can run the following:
+\begin{lstlisting}[style=bashstyle]
+export FLAMEGRAPH_DIR=$HOME/Flamegraph
+\end{lstlisting}
+\end{warnbox}
+
 \begin{tipbox}[Why 97\,Hz and not 99 or 100?]
 We use a prime number for the sampling frequency to avoid aliasing with periodic patterns in the code.
 If the code has a loop that takes exactly 10\,ms per iteration, and you sample at 100\,Hz, every sample lands at the same point in the loop, and you don't want that, since it would introduce a bias in the profiling results.
 Prime frequencies avoid these synchronisation issues.
 \end{tipbox}
 
-Open \texttt{flamegraph\_fortran.svg} in a web browser.
+Open \texttt{flamegraph\_fortran.svg} in a web browser (if you are working on a remote machine, remember to copy the SVG files to your laptop in order to view them in a browser, see \S~\ref{sec:scp}).
 The SVG is interactive: practice hovering over bars to see function names and sample percentages, click to zoom into a subtree, or search to highlight functions matching your search pattern (you can even use regular expressions).
 
 \begin{exercisebox}[Exercise 4a]
@@ -485,10 +528,10 @@ From the standard output, you can also find the total wall-time, note it here as
 \subsection{Profile the vectorised version}
 \label{sec:profile_cpp}
 
-Now profile the vectorised C++ version (replace \texttt{madevent\_cpp} with the appropriate binary name):
+Now profile the vectorised C++ version (replace \texttt{madevent\_cpp} with the appropriate binary name, in case you are trying these exercises on GPU):
 
 \begin{lstlisting}[style=bashstyle]
-perf record --call-graph=fp,1024 -F 97 -- ./madevent_cpp < G1/input_app.txt
+perf record --call-graph=fp,1024 -F 97 -- ./madevent_cpp < input_app.txt
 perf script | $FLAMEGRAPH_DIR/stackcollapse-perf.pl > cpp.folded
 $FLAMEGRAPH_DIR/flamegraph.pl cpp.folded > flamegraph_cpp.svg
 \end{lstlisting}
@@ -513,7 +556,7 @@ Write also the total wall-time, $T_\textup{SIMD} =$ \TextField[name=time_cpp, wi
 An alternative stack-walking method, called \emph{DWARF} is available.
 It uses debug unwind tables instead of frame pointers:
 \begin{lstlisting}[style=bashstyle]
-perf record --call-graph=dwarf -F 97 -- ./madevent_fortran < G1/input_app.txt
+perf record --call-graph=dwarf -F 97 -- ./madevent_fortran < input_app.txt
 \end{lstlisting}
 This works even without frame pointers but produces larger \texttt{perf.data} files.
 
@@ -575,12 +618,12 @@ Run the following for both the Fortran and vectorised versions:
 
 \begin{lstlisting}[style=bashstyle]
 perf stat -e task-clock,cycles,instructions,cache-misses,cache-references,L1-dcache-load-misses \
-    -- ./madevent_fortran < G1/input_app.txt
+    -- ./madevent_fortran < input_app.txt
 \end{lstlisting}
 
 \begin{lstlisting}[style=bashstyle]
 perf stat -e task-clock,cycles,instructions,cache-misses,cache-references,L1-dcache-load-misses \
-    -- ./madevent_cpp < G1/input_app.txt
+    -- ./madevent_cpp < input_app.txt
 \end{lstlisting}
 
 \begin{tipbox}[Counter multiplexing]
@@ -598,30 +641,9 @@ These counters reveal \emph{how} the CPU executes floating-point operations: sca
 We also keep \texttt{task-clock} in the event list so that \texttt{perf stat} can compute human-readable derived metrics like operations per second, very handy to make comparisons.
 Additionally, \texttt{task-clock} is a software event and does not consume a hardware counter register.
 
-\begin{lstlisting}[style=bashstyle]
-perf stat -e task-clock,<FP_SCALAR>,<FP_128>,<FP_256>,<FP_512> \
-    -- ./madevent_fortran < G1/input_app.txt
-\end{lstlisting}
-
-\begin{lstlisting}[style=bashstyle]
-perf stat -e task-clock,<FP_SCALAR>,<FP_128>,<FP_256>,<FP_512> \
-    -- ./madevent_cpp < G1/input_app.txt
-\end{lstlisting}
-
-Replace the placeholders with the appropriate counter names for your CPU.
-Indeed, counter names depend on vendor and microarchitecture; see~tab.~\ref{tab:fp_counters} for the most common ones.
-You can look them up on your machine by using \texttt{perf list} along with a keyword:
-\begin{lstlisting}[style=bashstyle]
-perf list floating
-\end{lstlisting}
-and then looking for keywords like \texttt{packed}, \texttt{sse}, \texttt{avx}, \texttt{retired}, \dots
-
-\begin{table}[h!]
-\centering
-\caption{Floating-point retired-operation counters for some vendors. This is not an exhaustive list, always verify with \texttt{perf list}.}
-\label{tab:fp_counters}
-\small
-\bigskip
+In the following, you need to replace the placeholders \texttt{<FP\_XXX>} with the appropriate counter names for your CPU.
+Indeed, counter names depend on vendor and microarchitecture, some examples for them are shown in the following table:
+\begin{center}
 \begin{tabular}{lll}
 \toprule
     \textbf{Width} & \textbf{Name example} \\
@@ -637,12 +659,29 @@ and then looking for keywords like \texttt{packed}, \texttt{sse}, \texttt{avx}, 
     512-bit & \texttt{fp\_ops\_retired\_by\_width.pack\_512\_uops\_retired} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{center}
+
+You can look them up on your machine by using \texttt{perf list} along with a keyword:
+\begin{lstlisting}[style=bashstyle]
+perf list floating
+\end{lstlisting}
+and then looking for keywords like \texttt{packed}, \texttt{sse}, \texttt{avx}, \texttt{retired}, \dots
+In some cases, you will not have separate counters for different vectorisation levels, so you will just use one single counter that reports the operations with some levels of vectorisation.
+
+\begin{lstlisting}[style=bashstyle]
+perf stat -e task-clock,<FP_SCALAR>,<FP_128>,<FP_256>,<FP_512> \
+    -- ./madevent_fortran < input_app.txt
+\end{lstlisting}
+
+\begin{lstlisting}[style=bashstyle]
+perf stat -e task-clock,<FP_SCALAR>,<FP_128>,<FP_256>,<FP_512> \
+    -- ./madevent_cpp < input_app.txt
+\end{lstlisting}
 
 \subsection{How to interpret the results}
 
 \begin{exercisebox}[Exercise 6]
-Collect the counters for both versions and fill in the following table:
+Collect the counters for both versions and fill in the following table (for the counters you have, you may not have some of them available on your system):
 \bigskip
 \begin{center}
 %\begin{tabular}{l>{\centering}p{0.25\linewidth}p{0.25\linewidth}}
@@ -675,6 +714,7 @@ Then answer the following questions:
     \item Is there something weird happening in the FP width counters for the Fortran-only version? Remember, this is supposed to be scalar, with no vectorisation involved...
     \item For the vectorised version, which width dominates? Is this consistent with the backend you chose?
 \end{enumerate}
+The latter two questions work better in case you have separate counters for different levels of vectorisation.
 
 \vspace{3mm}
 

@@ -92,7 +92,7 @@
     xleftmargin=5pt,
     xrightmargin=5pt,
     language=bash,
-    morekeywords={perf,wget,tar,make,source,mv,git,grep,ls},
+    morekeywords={perf,docker,wget,tar,make,source,mv,git,grep,ls},
     literate={~}{\textasciitilde}{1}
 }
 
@@ -204,8 +204,8 @@
         \vspace{0.1em}
         {\small\color{gray!70!black} \@date \par}
         \vspace{0.1em}
-        {\small\color{gray!70!black} \docversion \par}
-        \vspace{0.2em}
+        {\footnotesize\color{gray!70!black} Version:~\docversion \par}
+        \vspace{0.1em}
         {\color{accent}\rule{\textwidth}{2pt}}
     \end{center}
     \vspace{1em}
@@ -245,8 +245,8 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\headrule}{\hbox to\headwidth{\color{accent}\leaders\hrule height \headrulewidth\hfill}}
 \fancyhead[L]{\small\color{accent}Profiling with \perf and Flamegraphs}
-\fancyhead[R]{\small\color{accent}\thepage/\pageref{LastPage}}
-\fancyfoot[L]{\small\color{gray!70!black}\docversion}
+\fancyfoot[R]{\small\color{accent}\thepage/\pageref{LastPage}}
+\fancyhead[R]{\footnotesize\color{gray!70!black}\docversion}
 
 % ── Hyperlinks ───────────────────────────────────────────────────────────────
 \usepackage[savepos]{zref} % for the form
