@@ -11,7 +11,7 @@
 #   docker run -it --rm \
 #     --privileged \
 #     --pid=host \
-#     <image>
+#     ghcr.io/Qubitol/madgraph-profiling-exercises:latest
 #
 # NOTE: The host must also have perf_event_paranoid set to allow profiling:
 #   sudo sysctl kernel.perf_event_paranoid=-1
