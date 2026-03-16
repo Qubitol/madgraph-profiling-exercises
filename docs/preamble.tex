@@ -38,6 +38,15 @@
     \printtext{\thefield{urlday}/\thefield{urlmonth}/\thefield{urlyear}}%
   }%
 }
+
+% removes In:
+\renewbibmacro{in:}{%
+  \ifboolexpr{%
+     test {\ifentrytype{article}}%
+     or
+     test {\ifentrytype{inproceedings}}%
+  }{}{\printtext{\bibstring{in}\intitlepunct}}%
+}
 % ── Colours ──────────────────────────────────────────────────────────────────
 \usepackage[dvipsnames]{xcolor}
 \definecolor{accent}{HTML}{3F51B5}
