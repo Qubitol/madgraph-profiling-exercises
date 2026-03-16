@@ -81,8 +81,9 @@ jobs:
 
       - name: Inject version into LaTeX
         run: |
-          echo "\\newcommand{\\docversion}{${{ steps.version.outputs.VERSION }}}" \
-            > docs/version.tex
+          cat > docs/version.tex << EOF
+          \newcommand{\docversion}{${{ steps.version.outputs.VERSION }}}
+          EOF
 
       - name: Build diagram and PDF
         run: |
