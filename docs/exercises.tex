@@ -5,7 +5,7 @@
 \title{Profiling with \perf and Flamegraphs\\[0.2em]
 \large Hands-on exercises with \madgraph and \cudacpp}
 \author{Daniele Massaro}
-\date{16$^\textup{th}$ March 2026}
+\date{1$^\textup{th}$ October 2026}
 
 \begin{document}
 \maketitle
@@ -233,7 +233,7 @@ cd MadGraph5
 \subsection{Check your machine's vectorisation support}
 \label{sec:check_simd}
 
-Before choosing a CUDACPP backend to run, check the compiler flags by reading \texttt{/proc/cpuinfo}, or by running \texttt{lscpu}, you should find that at least \texttt{sse4\_2} and \texttt{avx}/\texttt{avx2}.
+Before choosing a CUDACPP backend to run, check the compiler flags by reading \texttt{/proc/cpuinfo}, or by running \texttt{lscpu}, you should find that at least \texttt{sse4\_2} and \texttt{avx}/\texttt{avx2} are supported.
 
 \begin{lstlisting}[style=bashstyle]
 grep -o -E 'sse4_2|avx2|avx512f|avx512bw|avx512vl' /proc/cpuinfo
