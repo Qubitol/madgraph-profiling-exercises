@@ -242,7 +242,7 @@ cd MadGraph5
 
 ### 3.4 Check your machine's vectorisation support
 
-Before choosing a CUDACPP backend to run, check the compiler flags by reading `/proc/cpuinfo`, or by running `lscpu`, you should find that at least `sse4_2` and `avx`/`avx2`.
+Before choosing a CUDACPP backend to run, check the compiler flags by reading `/proc/cpuinfo`, or by running `lscpu`, you should find that at least `sse4_2` and `avx`/`avx2` are supported.
 
 ```bash
 grep -o -E 'sse4_2|avx2|avx512f|avx512bw|avx512vl' /proc/cpuinfo
